@@ -24,17 +24,26 @@ const OrderPage = () => {
     loadOrders();
   }, []);
 
+  const searchInObject = (obj: any, query: string): boolean => {
+    if (typeof obj === 'string') {
+      return obj.toLowerCase().includes(query);
+    }
+    if (Array.isArray(obj)) {
+      return obj.some(item => searchInObject(item, query));
+    }
+    if (typeof obj === 'object' && obj !== null) {
+      return Object.values(obj).some(value => searchInObject(value, query));
+    }
+    return false;
+  };
+
   const handleSearch = (text: string) => {
     setSearchQuery(text);
     if (text.trim() === '') {
       setFilteredOrders(orders);
     } else {
       const lowerQuery = text.toLowerCase();
-      const filtered = orders.filter(order =>
-        order.client.toLowerCase().includes(lowerQuery) ||
-        order.contact.toLowerCase().includes(lowerQuery) ||
-        order.eventAddress.city.toLowerCase().includes(lowerQuery)
-      );
+      const filtered = orders.filter(order => searchInObject(order, lowerQuery));
       setFilteredOrders(filtered);
     }
   };
@@ -67,6 +76,10 @@ const OrderPage = () => {
     );
   }
 
+  const handleAddOrder = () => {
+    console.log('上架订单 button pressed');
+  };
+
   return (
     <View style={styles.pageContainer}>
       {/* Search bar & filter */}
@@ -94,6 +107,12 @@ const OrderPage = () => {
         style={styles.ordersList}
         showsVerticalScrollIndicator={false}
       />
+
+      {/* Floating Add Order Button */}
+      <TouchableOpacity style={styles.floatingButton} onPress={handleAddOrder}>
+        <Ionicons name="add-circle" size={24} color="#fff" />
+        <Text style={styles.floatingButtonText}>上架订单</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -184,6 +203,28 @@ const styles = StyleSheet.create({
     color: '#333',
     marginTop: 8,
     fontStyle: 'italic',
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: '#007AFF',
+    borderRadius: 28,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+  floatingButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
 });
 
