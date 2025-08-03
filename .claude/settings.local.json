@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git mv:*)",
+      "Bash(move appwelcome.tsx appadmin.tsx)",
+      "Bash(mv:*)",
+      "Bash(move fetchOrders fetchOrders.ts)",
+      "Bash(cat:*)"
+    ],
+    "deny": []
+  }
+}
