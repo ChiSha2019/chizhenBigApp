@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, TextInput, TouchableOpacity, Modal, Animated, Dimensions } from 'react-native';
 import { fetchOrders, Order } from '../api/fetchOrders';
 import { Ionicons } from '@expo/vector-icons'; // for search/filter icons
 
@@ -8,6 +8,9 @@ const OrderPage = () => {
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
+  const [selectedTimeFilter, setSelectedTimeFilter] = useState<string>('');
+  const slideAnim = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -49,8 +52,60 @@ const OrderPage = () => {
   };
 
   const handleFilterPress = () => {
-    // Add filter logic here (e.g. open a modal)
-    console.log('Filter button pressed');
+    setShowFilterSheet(true);
+    Animated.timing(slideAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeFilterSheet = () => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setShowFilterSheet(false);
+    });
+  };
+
+  const applyTimeFilter = (timeFilter: string) => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    
+    const next7Days = new Date(today);
+    next7Days.setDate(next7Days.getDate() + 7);
+    const next7DaysStr = next7Days.toISOString().split('T')[0];
+    
+    const nextMonth = new Date(today);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    const nextMonthStr = nextMonth.toISOString().split('T')[0];
+
+    let filtered = orders;
+    
+    if (timeFilter === '今天') {
+      filtered = orders.filter(order => order.eventDate === todayStr);
+    } else if (timeFilter === '明天') {
+      filtered = orders.filter(order => order.eventDate === tomorrowStr);
+    } else if (timeFilter === '未来7天') {
+      filtered = orders.filter(order => order.eventDate >= todayStr && order.eventDate <= next7DaysStr);
+    } else if (timeFilter === '未来一个月') {
+      filtered = orders.filter(order => order.eventDate >= todayStr && order.eventDate <= nextMonthStr);
+    }
+
+    setFilteredOrders(filtered);
+  };
+
+  const handleConfirmFilter = () => {
+    if (selectedTimeFilter) {
+      applyTimeFilter(selectedTimeFilter);
+    }
+    closeFilterSheet();
   };
 
   const renderOrderItem = ({ item }: { item: Order }) => (
@@ -113,6 +168,71 @@ const OrderPage = () => {
         <Ionicons name="add-circle" size={24} color="#fff" />
         <Text style={styles.floatingButtonText}>上架订单</Text>
       </TouchableOpacity>
+
+      {/* Filter Bottom Sheet */}
+      <Modal
+        visible={showFilterSheet}
+        transparent={true}
+        animationType="none"
+        onRequestClose={closeFilterSheet}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={closeFilterSheet}
+        >
+          <Animated.View 
+            style={[
+              styles.bottomSheet,
+              {
+                transform: [{
+                  translateY: slideAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [Dimensions.get('window').height, 0],
+                  }),
+                }],
+              },
+            ]}
+          >
+            <TouchableOpacity activeOpacity={1} onPress={() => {}}>
+              <View style={styles.sheetHeader}>
+                <Text style={styles.sheetTitle}>订单筛选</Text>
+              </View>
+              
+              <View style={styles.filterSection}>
+                <Text style={styles.sectionTitle}>活动时间</Text>
+                {['今天', '明天', '未来7天', '未来一个月'].map((option) => (
+                  <TouchableOpacity
+                    key={option}
+                    style={[
+                      styles.filterOption,
+                      selectedTimeFilter === option && styles.selectedOption
+                    ]}
+                    onPress={() => setSelectedTimeFilter(option)}
+                  >
+                    <Text style={[
+                      styles.optionText,
+                      selectedTimeFilter === option && styles.selectedOptionText
+                    ]}>
+                      {option}
+                    </Text>
+                    {selectedTimeFilter === option && (
+                      <Ionicons name="checkmark" size={20} color="#007AFF" />
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </View>
+              
+              <TouchableOpacity 
+                style={styles.confirmButton} 
+                onPress={handleConfirmFilter}
+              >
+                <Text style={styles.confirmButtonText}>确认</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          </Animated.View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
@@ -225,6 +345,75 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  bottomSheet: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 34,
+    minHeight: 300,
+  },
+  sheetHeader: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  sheetTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+  },
+  filterSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 12,
+  },
+  filterOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: '#f8f9fa',
+  },
+  selectedOption: {
+    backgroundColor: '#e8f4ff',
+    borderWidth: 1,
+    borderColor: '#007AFF',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  selectedOptionText: {
+    color: '#007AFF',
+    fontWeight: '500',
+  },
+  confirmButton: {
+    backgroundColor: '#007AFF',
+    marginHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  confirmButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
