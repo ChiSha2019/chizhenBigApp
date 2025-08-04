@@ -108,6 +108,11 @@ const OrderPage = () => {
     closeFilterSheet();
   };
 
+  const handleResetFilter = () => {
+    setSelectedTimeFilter('');
+    setFilteredOrders(orders);
+  };
+
   const renderOrderItem = ({ item }: { item: Order }) => (
     <View style={styles.orderItem}>
       <Text style={styles.orderDetail}>客户: {item.client}</Text>
@@ -223,12 +228,20 @@ const OrderPage = () => {
                 ))}
               </View>
               
-              <TouchableOpacity 
-                style={styles.confirmButton} 
-                onPress={handleConfirmFilter}
-              >
-                <Text style={styles.confirmButtonText}>确认</Text>
-              </TouchableOpacity>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity 
+                  style={styles.resetButton} 
+                  onPress={handleResetFilter}
+                >
+                  <Text style={styles.resetButtonText}>重置</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.confirmButton} 
+                  onPress={handleConfirmFilter}
+                >
+                  <Text style={styles.confirmButtonText}>确认</Text>
+                </TouchableOpacity>
+              </View>
             </TouchableOpacity>
           </Animated.View>
         </TouchableOpacity>
@@ -402,13 +415,32 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: '500',
   },
-  confirmButton: {
-    backgroundColor: '#007AFF',
+  buttonContainer: {
+    flexDirection: 'row',
     marginHorizontal: 20,
+    marginTop: 20,
+    gap: 12,
+  },
+  resetButton: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  resetButtonText: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  confirmButton: {
+    flex: 1,
+    backgroundColor: '#007AFF',
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
   },
   confirmButtonText: {
     color: '#fff',
