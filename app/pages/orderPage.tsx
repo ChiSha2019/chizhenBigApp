@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, TextInput, TouchableOpacity, Modal, Animated, Dimensions } from 'react-native';
 import { fetchOrders, Order } from '../api/fetchOrders';
 import { Ionicons } from '@expo/vector-icons'; // for search/filter icons
+import PrimaryButton from '../components/PrimaryButton';
+import SecondaryButton from '../components/SecondaryButton';
 
 const OrderPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -229,18 +231,16 @@ const OrderPage = () => {
               </View>
               
               <View style={styles.buttonContainer}>
-                <TouchableOpacity 
-                  style={styles.resetButton} 
+                <SecondaryButton 
+                  title="重置"
                   onPress={handleResetFilter}
-                >
-                  <Text style={styles.resetButtonText}>重置</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.confirmButton} 
+                  style={styles.buttonFlex}
+                />
+                <PrimaryButton 
+                  title="确认"
                   onPress={handleConfirmFilter}
-                >
-                  <Text style={styles.confirmButtonText}>确认</Text>
-                </TouchableOpacity>
+                  style={styles.buttonFlex}
+                />
               </View>
             </TouchableOpacity>
           </Animated.View>
@@ -421,31 +421,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     gap: 12,
   },
-  resetButton: {
+  buttonFlex: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  resetButtonText: {
-    color: '#666',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  confirmButton: {
-    flex: 1,
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  confirmButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });
 
