@@ -208,7 +208,7 @@ const OrderPage = () => {
   }
 
   const handleAddOrder = () => {
-    console.log('上架订单 button pressed');
+    router.push('/pages/createNewOrder');
   };
 
   return (
