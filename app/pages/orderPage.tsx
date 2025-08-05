@@ -303,7 +303,31 @@ const OrderPage = () => {
               <View style={styles.filterSection}>
                 <Text style={styles.sectionTitle}>经纪人提成</Text>
                 <View style={styles.optionsRow}>
-                  {['200', '400', '600', '1000'].map((option) => (
+                  {['40', '50', '100', '150'].map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[
+                        styles.filterOption,
+                        styles.quarterWidthOption,
+                        selectedCommissionFilter === option && styles.selectedOption
+                      ]}
+                      onPress={() => setSelectedCommissionFilter(option)}
+                    >
+                      <Text style={[
+                        styles.optionText,
+                        styles.smallOptionText,
+                        selectedCommissionFilter === option && styles.selectedOptionText
+                      ]}>
+                        {option}
+                      </Text>
+                      {selectedCommissionFilter === option && (
+                        <Ionicons name="checkmark" size={16} color="#007AFF" />
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <View style={styles.optionsRow}>
+                  {['200', '300', '500', '1000'].map((option) => (
                     <TouchableOpacity
                       key={option}
                       style={[
