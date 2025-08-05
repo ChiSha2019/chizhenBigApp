@@ -208,26 +208,30 @@ const OrderPage = () => {
               
               <View style={styles.filterSection}>
                 <Text style={styles.sectionTitle}>活动时间</Text>
-                {['今天', '明天', '未来7天', '未来一个月'].map((option) => (
-                  <TouchableOpacity
-                    key={option}
-                    style={[
-                      styles.filterOption,
-                      selectedTimeFilter === option && styles.selectedOption
-                    ]}
-                    onPress={() => setSelectedTimeFilter(option)}
-                  >
-                    <Text style={[
-                      styles.optionText,
-                      selectedTimeFilter === option && styles.selectedOptionText
-                    ]}>
-                      {option}
-                    </Text>
-                    {selectedTimeFilter === option && (
-                      <Ionicons name="checkmark" size={20} color="#007AFF" />
-                    )}
-                  </TouchableOpacity>
-                ))}
+                <View style={styles.optionsRow}>
+                  {['今天', '明天', '未来7天', '未来一个月'].map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[
+                        styles.filterOption,
+                        styles.quarterWidthOption,
+                        selectedTimeFilter === option && styles.selectedOption
+                      ]}
+                      onPress={() => setSelectedTimeFilter(option)}
+                    >
+                      <Text style={[
+                        styles.optionText,
+                        styles.smallOptionText,
+                        selectedTimeFilter === option && styles.selectedOptionText
+                      ]}>
+                        {option}
+                      </Text>
+                      {selectedTimeFilter === option && (
+                        <Ionicons name="checkmark" size={16} color="#007AFF" />
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
               
               <View style={styles.buttonContainer}>
@@ -392,6 +396,11 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 12,
   },
+  optionsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 8,
+  },
   filterOption: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -401,6 +410,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
     backgroundColor: '#f8f9fa',
+  },
+  halfWidthOption: {
+    flex: 1,
+    marginBottom: 0,
+  },
+  quarterWidthOption: {
+    flex: 1,
+    marginBottom: 0,
+    paddingHorizontal: 8,
+  },
+  smallOptionText: {
+    fontSize: 14,
   },
   selectedOption: {
     backgroundColor: '#e8f4ff',
