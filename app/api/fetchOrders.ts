@@ -243,6 +243,204 @@ export const fetchOrders = async (): Promise<Order[]> => {
       targetHairStylePhotos: ["bmw1.jpg", "bmw2.jpg", "bmw3.jpg"],
       modelRequirements: "高端商务模特，气质成熟，适合豪车代言",
       eventDescription: "宝马新车型发布展示"
+    },
+    {
+      client: "雅诗兰黛",
+      contact: "Beauty Director",
+      modelReviewer: "Sophia Wang",
+      eventDate: "2025-08-04",
+      eventTimeslot: {
+        startTime: "10:00",
+        endTime: "15:00"
+      },
+      eventAddress: {
+        city: "上海",
+        street: "上海市徐汇区淮海中路888号"
+      },
+      pay: {
+        agentCommission: "500",
+        modelPay: "100-250"
+      },
+      targetHairStyleDescription: "清新自然，护肤品代言风格",
+      targetHairStylePhotos: ["estee1.jpg", "estee2.jpg"],
+      modelRequirements: "女性模特，皮肤状态佳，适合美妆拍摄",
+      eventDescription: "雅诗兰黛护肤新品拍摄"
+    },
+    {
+      client: "迪奥",
+      contact: "Fashion Coordinator",
+      modelReviewer: "Pierre Chen",
+      eventDate: "2025-08-06",
+      eventTimeslot: {
+        startTime: "16:00",
+        endTime: "20:00"
+      },
+      eventAddress: {
+        city: "北京",
+        street: "北京市朝阳区国贸CBD"
+      },
+      pay: {
+        agentCommission: "800",
+        modelPay: "200-400"
+      },
+      targetHairStyleDescription: "高级时装，法式优雅",
+      targetHairStylePhotos: ["dior1.jpg", "dior2.jpg", "dior3.jpg"],
+      modelRequirements: "高端时装模特，身高175cm以上，有T台经验",
+      eventDescription: "迪奥高级定制时装秀"
+    },
+    {
+      client: "兰蔻",
+      contact: "Brand Manager",
+      modelReviewer: "Isabella Liu",
+      eventDate: "2025-08-06",
+      eventTimeslot: {
+        startTime: "14:00",
+        endTime: "18:00"
+      },
+      eventAddress: {
+        city: "广州",
+        street: "广州市天河区正佳广场"
+      },
+      pay: {
+        agentCommission: "600",
+        modelPay: "120-300"
+      },
+      targetHairStyleDescription: "浪漫优雅，法式风情",
+      targetHairStylePhotos: ["lancome1.jpg", "lancome2.jpg"],
+      modelRequirements: "成熟女性模特，气质优雅，适合化妆品代言",
+      eventDescription: "兰蔻香水新品发布"
+    },
+    {
+      client: "古驰",
+      contact: "Creative Director",
+      modelReviewer: "Marco Rossi",
+      eventDate: "2025-08-07",
+      eventTimeslot: {
+        startTime: "11:00",
+        endTime: "17:00"
+      },
+      eventAddress: {
+        city: "深圳",
+        street: "深圳市南山区海岸城"
+      },
+      pay: {
+        agentCommission: "700",
+        modelPay: "150-350"
+      },
+      targetHairStyleDescription: "前卫时尚，意式风格",
+      targetHairStylePhotos: ["gucci1.jpg", "gucci2.jpg"],
+      modelRequirements: "时尚模特，风格独特，适合奢侈品拍摄",
+      eventDescription: "古驰春夏系列拍摄"
+    },
+    {
+      client: "资生堂",
+      contact: "Marketing Head",
+      modelReviewer: "Yuki Tanaka",
+      eventDate: "2025-08-08",
+      eventTimeslot: {
+        startTime: "09:00",
+        endTime: "14:00"
+      },
+      eventAddress: {
+        city: "成都",
+        street: "成都市锦江区春熙路"
+      },
+      pay: {
+        agentCommission: "400",
+        modelPay: "80-200"
+      },
+      targetHairStyleDescription: "清透自然，日式简约",
+      targetHairStylePhotos: ["shiseido1.jpg"],
+      modelRequirements: "亚洲面孔模特，皮肤状态好，适合护肤品展示",
+      eventDescription: "资生堂护肤系列广告"
+    },
+    {
+      client: "路易威登",
+      contact: "Luxury Specialist",
+      modelReviewer: "Antoine Dubois", 
+      eventDate: "2025-08-04",
+      eventTimeslot: {
+        startTime: "12:00",
+        endTime: "18:00"
+      },
+      eventAddress: {
+        city: "上海",
+        street: "上海市黄浦区南京东路300号"
+      },
+      pay: {
+        agentCommission: "1200",
+        modelPay: "250-500"
+      },
+      targetHairStyleDescription: "奢华典雅，经典法式",
+      targetHairStylePhotos: ["lv1.jpg", "lv2.jpg", "lv3.jpg"],
+      modelRequirements: "顶级模特，国际面孔，有奢侈品拍摄经验",
+      eventDescription: "路易威登皮具系列大片拍摄"
+    },
+    {
+      client: "爱马仕",
+      contact: "Heritage Director",
+      modelReviewer: "Catherine Martin",
+      eventDate: "2025-08-05",
+      eventTimeslot: {
+        startTime: "10:00",
+        endTime: "16:00"
+      },
+      eventAddress: {
+        city: "北京",
+        street: "北京市东城区王府井大街"
+      },
+      pay: {
+        agentCommission: "800",
+        modelPay: "200-450"
+      },
+      targetHairStyleDescription: "贵族气质，传统优雅",
+      targetHairStylePhotos: ["hermes1.jpg", "hermes2.jpg"],
+      modelRequirements: "贵族气质模特，举止优雅，适合高端品牌",
+      eventDescription: "爱马仕丝巾系列拍摄"
+    },
+    {
+      client: "普拉达",
+      contact: "Style Director",
+      modelReviewer: "Giulia Ferrari",
+      eventDate: "2025-08-06",
+      eventTimeslot: {
+        startTime: "15:00",
+        endTime: "19:00"
+      },
+      eventAddress: {
+        city: "广州",
+        street: "广州市越秀区环市东路"
+      },
+      pay: {
+        agentCommission: "600",
+        modelPay: "140-320"
+      },
+      targetHairStyleDescription: "现代简约，意式精致",
+      targetHairStylePhotos: ["prada1.jpg", "prada2.jpg"],
+      modelRequirements: "时尚前卫模特，身材比例佳，适合高端时装",
+      eventDescription: "普拉达秋冬新品展示"
+    },
+    {
+      client: "范思哲",
+      contact: "Fashion Producer",
+      modelReviewer: "Valentina Greco",
+      eventDate: "2025-08-07",
+      eventTimeslot: {
+        startTime: "13:00",
+        endTime: "18:00"
+      },
+      eventAddress: {
+        city: "深圳",
+        street: "深圳市福田区购物公园"
+      },
+      pay: {
+        agentCommission: "700",
+        modelPay: "160-380"
+      },
+      targetHairStyleDescription: "性感魅力，意式风情",
+      targetHairStylePhotos: ["versace1.jpg", "versace2.jpg", "versace3.jpg"],
+      modelRequirements: "性感魅力模特，表现力强，适合时装大片",
+      eventDescription: "范思哲晚装系列拍摄"
     }
   ];
 };

@@ -13,7 +13,11 @@ const OrderPage = () => {
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<string>('');
   const [selectedCommissionFilter, setSelectedCommissionFilter] = useState<string>('');
+  const [showSortSheet, setShowSortSheet] = useState(false);
+  const [selectedTimeSort, setSelectedTimeSort] = useState<string>('');
+  const [selectedCommissionSort, setSelectedCommissionSort] = useState<string>('');
   const slideAnim = useState(new Animated.Value(0))[0];
+  const sortSlideAnim = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -123,6 +127,54 @@ const OrderPage = () => {
     setFilteredOrders(orders);
   };
 
+  const handleSortPress = () => {
+    setShowSortSheet(true);
+    Animated.timing(sortSlideAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeSortSheet = () => {
+    Animated.timing(sortSlideAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setShowSortSheet(false);
+    });
+  };
+
+  const applySorting = (timeSortOption: string, commissionSortOption: string) => {
+    let sorted = [...filteredOrders];
+    
+    // Apply time sorting first if selected
+    if (timeSortOption) {
+      if (timeSortOption === '时间升序') {
+        sorted.sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
+      } else if (timeSortOption === '时间降序') {
+        sorted.sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
+      }
+    }
+    
+    // Apply commission sorting second if selected (this will be the primary sort)
+    if (commissionSortOption) {
+      if (commissionSortOption === '提成升序') {
+        sorted.sort((a, b) => parseInt(a.pay.agentCommission) - parseInt(b.pay.agentCommission));
+      } else if (commissionSortOption === '提成降序') {
+        sorted.sort((a, b) => parseInt(b.pay.agentCommission) - parseInt(a.pay.agentCommission));
+      }
+    }
+    
+    setFilteredOrders(sorted);
+  };
+
+  const handleConfirmSort = () => {
+    applySorting(selectedTimeSort, selectedCommissionSort);
+    closeSortSheet();
+  };
+
   const renderOrderItem = ({ item }: { item: Order }) => (
     <View style={styles.orderItem}>
       <Text style={styles.orderDetail}>客户: {item.client}</Text>
@@ -163,10 +215,16 @@ const OrderPage = () => {
             onChangeText={handleSearch}
           />
         </View>
-        <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
-          <Ionicons name="filter" size={20} color="#333" />
-          <Text style={styles.filterText}>筛选</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
+            <Ionicons name="filter" size={20} color="#333" />
+            <Text style={styles.filterText}>筛选</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.sortButton} onPress={handleSortPress}>
+            <Ionicons name="swap-vertical" size={20} color="#333" />
+            <Text style={styles.sortText}>排序</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Orders list */}
@@ -286,6 +344,107 @@ const OrderPage = () => {
           </Animated.View>
         </TouchableOpacity>
       </Modal>
+
+      {/* Sort Bottom Sheet */}
+      <Modal
+        visible={showSortSheet}
+        transparent={true}
+        animationType="none"
+        onRequestClose={closeSortSheet}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={closeSortSheet}
+        >
+          <Animated.View 
+            style={[
+              styles.bottomSheet,
+              {
+                transform: [{
+                  translateY: sortSlideAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [Dimensions.get('window').height, 0],
+                  }),
+                }],
+              },
+            ]}
+          >
+            <TouchableOpacity activeOpacity={1} onPress={() => {}}>
+              <View style={styles.sheetHeader}>
+                <Text style={styles.sheetTitle}>订单排序</Text>
+              </View>
+              
+              <View style={styles.filterSection}>
+                <Text style={styles.sectionTitle}>时间排序</Text>
+                <View style={styles.optionsRow}>
+                  {['时间升序', '时间降序'].map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[
+                        styles.filterOption,
+                        styles.halfWidthOption,
+                        selectedTimeSort === option && styles.selectedOption
+                      ]}
+                      onPress={() => setSelectedTimeSort(selectedTimeSort === option ? '' : option)}
+                    >
+                      <Text style={[
+                        styles.optionText,
+                        selectedTimeSort === option && styles.selectedOptionText
+                      ]}>
+                        {option}
+                      </Text>
+                      {selectedTimeSort === option && (
+                        <Ionicons name="checkmark" size={20} color="#007AFF" />
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              
+              <View style={styles.filterSection}>
+                <Text style={styles.sectionTitle}>提成排序</Text>
+                <View style={styles.optionsRow}>
+                  {['提成升序', '提成降序'].map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[
+                        styles.filterOption,
+                        styles.halfWidthOption,
+                        selectedCommissionSort === option && styles.selectedOption
+                      ]}
+                      onPress={() => setSelectedCommissionSort(selectedCommissionSort === option ? '' : option)}
+                    >
+                      <Text style={[
+                        styles.optionText,
+                        selectedCommissionSort === option && styles.selectedOptionText
+                      ]}>
+                        {option}
+                      </Text>
+                      {selectedCommissionSort === option && (
+                        <Ionicons name="checkmark" size={20} color="#007AFF" />
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              
+              <View style={styles.buttonContainer}>
+                <SecondaryButton 
+                  title="取消"
+                  onPress={closeSortSheet}
+                  style={styles.buttonFlex}
+                />
+                <PrimaryButton 
+                  title="确认"
+                  onPress={handleConfirmSort}
+                  style={styles.buttonFlex}
+                />
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
@@ -307,6 +466,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    gap: 8,
   },
   searchInputWrapper: {
     flex: 1,
@@ -337,6 +500,21 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   filterText: {
+    marginLeft: 4,
+    fontSize: 14,
+    color: '#333',
+  },
+  sortButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    height: 40,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  sortText: {
     marginLeft: 4,
     fontSize: 14,
     color: '#333',
