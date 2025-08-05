@@ -6,7 +6,10 @@
       "Bash(mv:*)",
       "Bash(move fetchOrders fetchOrders.ts)",
       "Bash(cat:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

@@ -12,6 +12,7 @@ const OrderPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<string>('');
+  const [selectedCommissionFilter, setSelectedCommissionFilter] = useState<string>('');
   const slideAnim = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
@@ -72,46 +73,53 @@ const OrderPage = () => {
     });
   };
 
-  const applyTimeFilter = (timeFilter: string) => {
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
-    
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
-    
-    const next7Days = new Date(today);
-    next7Days.setDate(next7Days.getDate() + 7);
-    const next7DaysStr = next7Days.toISOString().split('T')[0];
-    
-    const nextMonth = new Date(today);
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-    const nextMonthStr = nextMonth.toISOString().split('T')[0];
-
+  const applyFilters = (timeFilter: string, commissionFilter: string) => {
     let filtered = orders;
-    
-    if (timeFilter === '今天') {
-      filtered = orders.filter(order => order.eventDate === todayStr);
-    } else if (timeFilter === '明天') {
-      filtered = orders.filter(order => order.eventDate === tomorrowStr);
-    } else if (timeFilter === '未来7天') {
-      filtered = orders.filter(order => order.eventDate >= todayStr && order.eventDate <= next7DaysStr);
-    } else if (timeFilter === '未来一个月') {
-      filtered = orders.filter(order => order.eventDate >= todayStr && order.eventDate <= nextMonthStr);
+
+    // Apply time filter
+    if (timeFilter) {
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+      
+      const next7Days = new Date(today);
+      next7Days.setDate(next7Days.getDate() + 7);
+      const next7DaysStr = next7Days.toISOString().split('T')[0];
+      
+      const nextMonth = new Date(today);
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const nextMonthStr = nextMonth.toISOString().split('T')[0];
+
+      if (timeFilter === '今天') {
+        filtered = filtered.filter(order => order.eventDate === todayStr);
+      } else if (timeFilter === '明天') {
+        filtered = filtered.filter(order => order.eventDate === tomorrowStr);
+      } else if (timeFilter === '未来7天') {
+        filtered = filtered.filter(order => order.eventDate >= todayStr && order.eventDate <= next7DaysStr);
+      } else if (timeFilter === '未来一个月') {
+        filtered = filtered.filter(order => order.eventDate >= todayStr && order.eventDate <= nextMonthStr);
+      }
+    }
+
+    // Apply commission filter
+    if (commissionFilter) {
+      filtered = filtered.filter(order => order.pay.agentCommission === commissionFilter);
     }
 
     setFilteredOrders(filtered);
   };
 
   const handleConfirmFilter = () => {
-    if (selectedTimeFilter) {
-      applyTimeFilter(selectedTimeFilter);
-    }
+    applyFilters(selectedTimeFilter, selectedCommissionFilter);
     closeFilterSheet();
   };
 
   const handleResetFilter = () => {
     setSelectedTimeFilter('');
+    setSelectedCommissionFilter('');
     setFilteredOrders(orders);
   };
 
@@ -227,6 +235,34 @@ const OrderPage = () => {
                         {option}
                       </Text>
                       {selectedTimeFilter === option && (
+                        <Ionicons name="checkmark" size={16} color="#007AFF" />
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              
+              <View style={styles.filterSection}>
+                <Text style={styles.sectionTitle}>经纪人提成</Text>
+                <View style={styles.optionsRow}>
+                  {['200', '400', '600', '1000'].map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[
+                        styles.filterOption,
+                        styles.quarterWidthOption,
+                        selectedCommissionFilter === option && styles.selectedOption
+                      ]}
+                      onPress={() => setSelectedCommissionFilter(option)}
+                    >
+                      <Text style={[
+                        styles.optionText,
+                        styles.smallOptionText,
+                        selectedCommissionFilter === option && styles.selectedOptionText
+                      ]}>
+                        {option}
+                      </Text>
+                      {selectedCommissionFilter === option && (
                         <Ionicons name="checkmark" size={16} color="#007AFF" />
                       )}
                     </TouchableOpacity>
