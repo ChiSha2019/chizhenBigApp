@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, TextInput, TouchableOpacity, Modal, Animated, Dimensions } from 'react-native';
+import { useRouter } from 'expo-router';
 import { fetchOrders, Order } from '../api/fetchOrders';
 import { Ionicons } from '@expo/vector-icons'; // for search/filter icons
 import PrimaryButton from '../components/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 
 const OrderPage = () => {
+  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -175,8 +177,12 @@ const OrderPage = () => {
     closeSortSheet();
   };
 
-  const renderOrderItem = ({ item }: { item: Order }) => (
-    <View style={styles.orderItem}>
+  const renderOrderItem = ({ item, index }: { item: Order; index: number }) => (
+    <TouchableOpacity 
+      style={styles.orderItem}
+      onPress={() => router.push(`/pages/orderDetail?orderId=${index}`)}
+      activeOpacity={0.7}
+    >
       <Text style={styles.orderDetail}>客户: {item.client}</Text>
       <Text style={styles.orderDetail}>联系人: {item.contact}</Text>
       <Text style={styles.orderDetail}>审核人: {item.modelReviewer}</Text>
@@ -186,7 +192,10 @@ const OrderPage = () => {
       <Text style={styles.orderDetail}>模特费用: {item.pay.modelPay}</Text>
       <Text style={styles.orderDetail}>经纪人佣金: {item.pay.agentCommission}</Text>
       <Text style={styles.description}>活动说明: {item.eventDescription}</Text>
-    </View>
+      <View style={styles.orderItemArrow}>
+        <Ionicons name="chevron-forward" size={20} color="#ccc" />
+      </View>
+    </TouchableOpacity>
   );
 
   if (loading) {
@@ -230,7 +239,7 @@ const OrderPage = () => {
       {/* Orders list */}
       <FlatList
         data={filteredOrders}
-        renderItem={renderOrderItem}
+        renderItem={({ item, index }) => renderOrderItem({ item, index })}
         keyExtractor={(item, index) => index.toString()}
         style={styles.ordersList}
         showsVerticalScrollIndicator={false}
@@ -567,6 +576,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+    position: 'relative',
+  },
+  orderItemArrow: {
+    position: 'absolute',
+    right: 16,
+    top: '50%',
+    transform: [{ translateY: -10 }],
   },
   orderDetail: {
     fontSize: 14,

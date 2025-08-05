@@ -18,7 +18,7 @@ export default function LoginPage() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>智真模特经纪管理系统</Text>
+      <Text style={styles.title}>SModel模特经纪管理系统</Text>
       <Text style={styles.subtitle}>请输入您的账户信息</Text>
       <TextInput
         placeholder="用户名"
